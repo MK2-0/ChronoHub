@@ -1,0 +1,16 @@
+# Entornos virtuales y caché de Python
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Variables de entorno y credenciales
+.env
+
+
+node_modules/
+vendor/
+
+
+.DS_Store
+Thumbs.db 
