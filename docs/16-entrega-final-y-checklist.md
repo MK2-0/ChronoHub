@@ -10,7 +10,7 @@ Docente: [JEISON NELSON PERNIA ARAQUE]
 
 Fecha de entrega: 10/06/2026
 
-Repositorio: [https://github.com/usuario/chronohub-sglt](https://github.com/usuario/chronohub-sglt)
+Repositorio: [https://github.com/MK2-0/ChronoHub.git](https://github.com/usuario/chronohub-sglt)
 
 Release o tag: v1.0.0-final-release
 

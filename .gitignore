@@ -4,13 +4,14 @@ env/
 __pycache__/
 *.pyc
 
-# Variables de entorno y credenciales
+# Variables de entorno, base de datos local y credenciales
 .env
-
+*.db
+*.sqlite3
 
 node_modules/
 vendor/
 
 
 .DS_Store
-Thumbs.db 
+Thumbs.db

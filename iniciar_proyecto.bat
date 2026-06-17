@@ -94,6 +94,14 @@ if not "%VENV_OK%"=="1" (
 )
 
 :: -----------------------------------------------
+:: Crear archivo .env si no existe
+:: -----------------------------------------------
+if not exist "%BACKEND%\.env" (
+    echo [SETUP] Creando archivo .env a partir de .env.example...
+    copy "%BACKEND%\.env.example" "%BACKEND%\.env" >nul
+)
+
+:: -----------------------------------------------
 :: Liberar el puerto 8000 si ya esta en uso
 :: -----------------------------------------------
 for /f "tokens=5" %%p in ('netstat -ano ^| findstr "127.0.0.1:8000"') do (
