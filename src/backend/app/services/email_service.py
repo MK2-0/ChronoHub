@@ -93,6 +93,16 @@ def send_verification_email(to_email: str, user_name: str, code: str) -> bool:
     msg.attach(MIMEText(html_body, "html", "utf-8"))
 
     print(f"[EMAIL INFO] Intentando enviar correo a {to_email}...", flush=True)
+
+    # Si no se configuraron credenciales, simular envío imprimiendo en consola
+    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
+        print("\n" + "="*80, flush=True)
+        print(f" [DESARROLLO] GMAIL_USER o GMAIL_APP_PASSWORD no están configurados en .env", flush=True)
+        print(f" [DESARROLLO] Código de verificación para {user_name} ({to_email}):", flush=True)
+        print(f" >>> {code} <<<", flush=True)
+        print("="*80 + "\n", flush=True)
+        return True
+
     try:
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
@@ -102,7 +112,13 @@ def send_verification_email(to_email: str, user_name: str, code: str) -> bool:
         return True
     except Exception as e:
         print(f"[EMAIL ERROR] No se pudo enviar el correo a {to_email}: {e}", flush=True)
+        print("\n" + "="*80, flush=True)
+        print(f" [FALLO DE ENVÍO] No se pudo conectar con el servidor de correo.", flush=True)
+        print(f" [DESARROLLO] Código de verificación para {user_name} ({to_email}):", flush=True)
+        print(f" >>> {code} <<<", flush=True)
+        print("="*80 + "\n", flush=True)
         return False
+
 
 
 def create_verification_code(db: Session, user_id) -> str:

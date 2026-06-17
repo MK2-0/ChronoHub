@@ -36,7 +36,7 @@ Antes de ejecutar el proyecto por primera vez necesitas tener **Python 3.14** in
    ```
 4. Cuando termine, se abrirá automáticamente la aplicación en tu navegador.
 
-5. Cuando se registre se enviara un código de verificacion a su correo dicho código estara en la parte de spam
+5. Cuando te registres se enviará un código de verificación a tu correo (si configuraste Gmail en tu archivo `.env`). Si estás en desarrollo local y no has configurado Gmail, podrás ver el código de verificación impreso directamente en la consola/terminal del backend para copiarlo y pegarlo en la pantalla de verificación.
 
 ### A partir de la segunda vez
 Simplemente haz doble clic en **`iniciar_proyecto.bat`** — el arranque es inmediato.
@@ -67,21 +67,22 @@ Al ejecutarlo, el script realiza los siguientes pasos de forma automática, sin 
 
 ---
 
-## 🔑 Configurar la base de datos (solo si es necesario)
+## 🔑 Configurar variables de entorno y base de datos (Opcional)
 
-ChronoHub guarda los datos en una base de datos en la nube. Para conectarte necesitas el archivo de configuración `.env`:
+Por defecto, ChronoHub creará una base de datos local SQLite para que puedas ejecutar el proyecto sin configurar nada. Sin embargo, si deseas usar una base de datos externa (como PostgreSQL) o activar el envío de correos, puedes hacerlo usando el archivo `.env`:
 
 1. Dentro de la carpeta `src/backend/` encontrarás un archivo llamado **`.env.example`**.
-2. Duplica ese archivo y renómbralo como **`.env`** (sin la parte `.example`).
-3. Abre el archivo `.env` con el Bloc de notas y rellena las credenciales:
+2. El script `iniciar_proyecto.bat` ya crea automáticamente tu archivo **`.env`** a partir de este ejemplo al ejecutarse por primera vez.
+3. Abre el archivo `src/backend/.env` con el Bloc de notas y rellena o descomenta las credenciales que desees:
    ```
    DATABASE_URL="postgresql://USUARIO:CONTRASEÑA@HOST/NOMBRE_BD?sslmode=require"
    SECRET_KEY="tu_clave_secreta"
-   SMTP_USERNAME="tu-email@gmail.com"
-   SMTP_PASSWORD="tu-contraseña-de-aplicacion"
+   GMAIL_USER="tu-correo@gmail.com"
+   GMAIL_APP_PASSWORD="tu-contrasena-de-aplicacion-de-gmail"
    ```
 
-> ⚠️ **El archivo `.env` contiene datos privados. Nunca lo compartas ni lo subas al repositorio.**
+> ⚠️ **El archivo `.env` contiene datos privados y credenciales de acceso. Nunca lo compartas ni lo subas al repositorio.**
+
 
 ---
 
