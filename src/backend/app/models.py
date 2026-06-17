@@ -1,12 +1,44 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import TypeDecorator, CHAR
 from sqlalchemy.orm import relationship
 from .database import Base
 import uuid
 
+class GUID(TypeDecorator):
+    """Tipo GUID independiente de la plataforma.
+    Usa el tipo UUID de PostgreSQL en PostgreSQL, y CHAR(36) en otros motores (como SQLite).
+    Maneja la conversión de strings a objetos UUID automáticamente.
+    """
+    impl = CHAR
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == 'postgresql':
+            from sqlalchemy.dialects.postgresql import UUID as pg_UUID
+            return dialect.type_descriptor(pg_UUID(as_uuid=True))
+        else:
+            return dialect.type_descriptor(CHAR(36))
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            if not isinstance(value, uuid.UUID):
+                return str(uuid.GUID(value) if hasattr(uuid, 'GUID') else uuid.UUID(value))
+            else:
+                return str(value)
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            if not isinstance(value, uuid.UUID):
+                return uuid.UUID(value)
+            return value
+
 class User(Base):
     __tablename__ = "users"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
@@ -21,7 +53,7 @@ class User(Base):
 class EmailVerification(Base):
     __tablename__ = "email_verifications"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    user_id = Column(GUID(), ForeignKey("users.id"), nullable=False)
     code = Column(String(6), nullable=False)
     expires_at = Column(DateTime(timezone=True), nullable=False)
     used = Column(Boolean, nullable=False, default=False)
@@ -33,7 +65,7 @@ class EmailVerification(Base):
 class Task(Base):
     __tablename__ = "tasks"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    user_id = Column(GUID(), ForeignKey("users.id"))
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     priority = Column(String(10), default="medium")
@@ -50,7 +82,7 @@ class Task(Base):
 class Event(Base):
     __tablename__ = "events"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    user_id = Column(GUID(), ForeignKey("users.id"), nullable=False)
     title = Column(String(255), nullable=False)
     start_time = Column(DateTime(timezone=True), nullable=False)
     end_time = Column(DateTime(timezone=True), nullable=False)
